@@ -7,8 +7,8 @@ import (
 
 // Coordinates is a struct with a slice of float64 and an additional string field
 type Coordinates struct {
-	values []float64
-	label  string
+	Values []float64
+	Label  string
 }
 
 // Observation is a data point (float64 between 0.0 and 1.0) in n dimensions
