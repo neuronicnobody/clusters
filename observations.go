@@ -29,8 +29,8 @@ func (c Coordinates) Coordinates() Coordinates {
 // Distance returns the euclidean distance between two coordinates
 func (c Coordinates) Distance(p2 Coordinates) float64 {
 	var r float64
-	for i, v := range c.values {
-		r += math.Pow(v-p2.values[i], 2)
+	for i, v := range c.Values {
+		r += math.Pow(v-p2.Values[i], 2)
 	}
 	return r
 }
@@ -42,17 +42,17 @@ func (c Observations) Center() (Coordinates, error) {
 		return Coordinates{}, fmt.Errorf("there is no mean for an empty set of points")
 	}
 
-	cc := make([]float64, len(c[0].Coordinates().values))
+	cc := make([]float64, len(c[0].Coordinates().Values))
 	for _, point := range c {
-		for j, v := range point.Coordinates().values {
+		for j, v := range point.Coordinates().Values {
 			cc[j] += v
 		}
 	}
 
 	var mean Coordinates
-	mean.values = make([]float64, len(cc))
+	mean.Values = make([]float64, len(cc))
 	for i, v := range cc {
-		mean.values[i] = v / float64(l)
+		mean.Values[i] = v / float64(l)
 	}
 	return mean, nil
 }
