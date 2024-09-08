@@ -18,7 +18,7 @@ type Clusters []Cluster
 // New sets up a new set of clusters and randomly seeds their initial positions
 func New(k int, dataset Observations) (Clusters, error) {
 	var c Clusters
-	if len(dataset) == 0 || len(dataset[0].Coordinates()) == 0 {
+	if len(dataset) == 0 || len(dataset[0].Coordinates().values) == 0 {
 		return c, fmt.Errorf("there must be at least one dimension in the data set")
 	}
 	if k == 0 {
@@ -27,9 +27,9 @@ func New(k int, dataset Observations) (Clusters, error) {
 
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < k; i++ {
-		var p Coordinates
-		for j := 0; j < len(dataset[0].Coordinates()); j++ {
-			p = append(p, rand.Float64())
+		p := Coordinates{values: make([]float64, len(dataset[0].Coordinates().values))}
+		for j := 0; j < len(dataset[0].Coordinates().values); j++ {
+			p.values[j] = rand.Float64()
 		}
 
 		c = append(c, Cluster{
@@ -106,20 +106,20 @@ func (c Clusters) Reset() {
 }
 
 // PointsInDimension returns all coordinates in a given dimension
-func (c Cluster) PointsInDimension(n int) Coordinates {
+func (c Cluster) PointsInDimension(n int) []float64 {
 	var v []float64
 	for _, p := range c.Observations {
-		v = append(v, p.Coordinates()[n])
+		v = append(v, p.Coordinates().values[n])
 	}
 	return v
 }
 
 // CentersInDimension returns all cluster centroids' coordinates in a given
 // dimension
-func (c Clusters) CentersInDimension(n int) Coordinates {
+func (c Clusters) CentersInDimension(n int) []float64 {
 	var v []float64
 	for _, cl := range c {
-		v = append(v, cl.Center[n])
+		v = append(v, cl.Center.values[n])
 	}
 	return v
 }

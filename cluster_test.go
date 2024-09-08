@@ -5,8 +5,8 @@ import (
 )
 
 func TestDistance(t *testing.T) {
-	p1 := Coordinates{2, 2}
-	p2 := Coordinates{3, 5}
+	p1 := Coordinates{values: []float64{2, 2}}
+	p2 := Coordinates{values: []float64{3, 5}}
 
 	d := p1.Distance(p2.Coordinates())
 	if d != 10 {
@@ -16,9 +16,9 @@ func TestDistance(t *testing.T) {
 
 func TestCenter(t *testing.T) {
 	var o Observations
-	o = append(o, Coordinates{1, 1})
-	o = append(o, Coordinates{3, 2})
-	o = append(o, Coordinates{5, 3})
+	o = append(o, Coordinates{values: []float64{1, 1}})
+	o = append(o, Coordinates{values: []float64{3, 2}})
+	o = append(o, Coordinates{values: []float64{5, 3}})
 
 	m, err := o.Center()
 	if err != nil {
@@ -26,16 +26,16 @@ func TestCenter(t *testing.T) {
 		return
 	}
 
-	if m[0] != 3 || m[1] != 2 {
-		t.Errorf("Expected coordinates [3 2], got %v", m)
+	if m.values[0] != 3 || m.values[1] != 2 {
+		t.Errorf("Expected coordinates [3 2], got %v", m.values)
 	}
 }
 
 func TestAverageDistance(t *testing.T) {
 	var o Observations
-	o = append(o, Coordinates{1, 1})
-	o = append(o, Coordinates{3, 2})
-	o = append(o, Coordinates{5, 3})
+	o = append(o, Coordinates{values: []float64{1, 1}})
+	o = append(o, Coordinates{values: []float64{3, 2}})
+	o = append(o, Coordinates{values: []float64{5, 3}})
 
 	d := AverageDistance(o[0], o[1:])
 	if d != 12.5 {
@@ -50,9 +50,9 @@ func TestAverageDistance(t *testing.T) {
 
 func TestClusters(t *testing.T) {
 	var o Observations
-	o = append(o, Coordinates{1, 1})
-	o = append(o, Coordinates{3, 2})
-	o = append(o, Coordinates{5, 3})
+	o = append(o, Coordinates{values: []float64{1, 1}})
+	o = append(o, Coordinates{values: []float64{3, 2}})
+	o = append(o, Coordinates{values: []float64{5, 3}})
 
 	c, err := New(2, o)
 	if err != nil {

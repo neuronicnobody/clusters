@@ -5,8 +5,11 @@ import (
 	"math"
 )
 
-// Coordinates is a slice of float64
-type Coordinates []float64
+// Coordinates is a struct with a slice of float64 and an additional string field
+type Coordinates struct {
+	values []float64
+	label  string
+}
 
 // Observation is a data point (float64 between 0.0 and 1.0) in n dimensions
 type Observation interface {
@@ -20,14 +23,14 @@ type Observations []Observation
 // Coordinates implements the Observation interface for a plain set of float64
 // coordinates
 func (c Coordinates) Coordinates() Coordinates {
-	return Coordinates(c)
+	return c
 }
 
 // Distance returns the euclidean distance between two coordinates
 func (c Coordinates) Distance(p2 Coordinates) float64 {
 	var r float64
-	for i, v := range c {
-		r += math.Pow(v-p2[i], 2)
+	for i, v := range c.values {
+		r += math.Pow(v-p2.values[i], 2)
 	}
 	return r
 }
@@ -36,19 +39,20 @@ func (c Coordinates) Distance(p2 Coordinates) float64 {
 func (c Observations) Center() (Coordinates, error) {
 	var l = len(c)
 	if l == 0 {
-		return nil, fmt.Errorf("there is no mean for an empty set of points")
+		return Coordinates{}, fmt.Errorf("there is no mean for an empty set of points")
 	}
 
-	cc := make([]float64, len(c[0].Coordinates()))
+	cc := make([]float64, len(c[0].Coordinates().values))
 	for _, point := range c {
-		for j, v := range point.Coordinates() {
+		for j, v := range point.Coordinates().values {
 			cc[j] += v
 		}
 	}
 
 	var mean Coordinates
-	for _, v := range cc {
-		mean = append(mean, v/float64(l))
+	mean.values = make([]float64, len(cc))
+	for i, v := range cc {
+		mean.values[i] = v / float64(l)
 	}
 	return mean, nil
 }
