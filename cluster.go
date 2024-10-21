@@ -39,6 +39,55 @@ func New(k int, dataset Observations) (Clusters, error) {
 	return c, nil
 }
 
+// New sets up a new set of clusters with specified initial positions
+func NewWithInitial(k int, dataset Observations, initialCenters []Coordinates) (Clusters, error) {
+	var c Clusters
+	if len(dataset) == 0 || len(dataset[0].Coordinates().Values) == 0 {
+		return c, fmt.Errorf("there must be at least one dimension in the data set")
+	}
+	if k == 0 {
+		return c, fmt.Errorf("k must be greater than 0")
+	}
+	if len(initialCenters) != k {
+		return c, fmt.Errorf("the number of initial centers must match k")
+	}
+
+	for i := 0; i < k; i++ {
+		c = append(c, Cluster{
+			Center: initialCenters[i],
+		})
+	}
+	return c, nil
+}
+
+// New sets up a new set of clusters with specified initial positions, checks for matching dimensionality
+// func NewWithInitial(k int, dataset Observations, initialCenters []Coordinates) (Clusters, error) {
+//     var c Clusters
+//     if len(dataset) == 0 || len(dataset[0].Coordinates().Values) == 0 {
+//         return c, fmt.Errorf("there must be at least one dimension in the data set")
+//     }
+//     if k == 0 {
+//         return c, fmt.Errorf("k must be greater than 0")
+//     }
+//     if len(initialCenters) != k {
+//         return c, fmt.Errorf("the number of initial centers must match k")
+//     }
+
+//     expectedDim := len(dataset[0].Coordinates().Values)
+//     for _, center := range initialCenters {
+//         if len(center.Values) != expectedDim {
+//             return c, fmt.Errorf("all initial centers must have the same dimensionality as the dataset")
+//         }
+//     }
+
+//     for i := 0; i < k; i++ {
+//         c = append(c, Cluster{
+//             Center: initialCenters[i],
+//         })
+//     }
+//     return c, nil
+// }
+
 // Append adds an observation to the Cluster
 func (c *Cluster) Append(point Observation) {
 	c.Observations = append(c.Observations, point)
